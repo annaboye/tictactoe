@@ -7,7 +7,6 @@ import {Player} from '../models/Player';
 let beforeGame = ref(true);
 let gameRunning = ref(false);
 let players = ref<Player[]>([]);
-
 let currentPlayer= ref<string>("X")
 
 
@@ -15,7 +14,7 @@ let currentPlayer= ref<string>("X")
 
 function handleStart(x: string, o: string){
   console.log(x,o)
-players.value.push(new Player(x, false, false, "X"), new Player(o, true, false, "O") )
+players.value.push(new Player(x, false, false, "X", []), new Player(o, true, false, "O",[]) )
   currentPlayer.value = players.value[0].name;
 
   console.log(players);
@@ -23,7 +22,17 @@ players.value.push(new Player(x, false, false, "X"), new Player(o, true, false, 
   gameRunning.value= true;  
 }
 
-function squareClicked(n:number){
+function squareClicked(e: MouseEvent, n:number){
+    let square= e.target as HTMLDivElement
+    players.value.forEach(player => {
+        if(player.currentPlayer){
+         player.clickedSquares.push(n)
+         square.innerHTML= player.type
+         console.log(player)
+        }
+        
+        
+    });
     togglePlayer(players.value)
     console.log(n)
 }
@@ -41,7 +50,7 @@ currentPlayer
   <h1>TIC TAC TOE</h1>
   <StartForm v-if="beforeGame" @addPlayers="handleStart"></StartForm>
   <div  v-else class="board">
-    <SquaresForBoard v-for="n in 9" :key="n" @click="squareClicked(n)"/>
+    <SquaresForBoard v-for="n in 9" :key="n" @click="squareClicked($event,n)"/>
   </div>
 <div v-for="player, index in players"  :key="index" ><p v-if="player.currentPlayer">{{player.name}}: make your move</p> </div>
   

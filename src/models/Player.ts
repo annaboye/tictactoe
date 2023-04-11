@@ -4,5 +4,6 @@ export class Player {
     public currentPlayer: boolean,
     public wins: boolean,
     public type: string,
+    public clickedSquares: number[]
   ) {}
 }
