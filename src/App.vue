@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import Board from './components/Board.vue'
+
+import TicTacToe from './components/TicTacToe.vue'
+
 </script>
 
 <template>
-  <h1>TIC TAC TOE</h1>
-  <Board/>
+ 
+  <TicTacToe />
+
 </template>
 
 <style scoped>
