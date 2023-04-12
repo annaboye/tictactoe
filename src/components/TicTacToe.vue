@@ -24,46 +24,27 @@ const calculateWinner = (clickedSquares: number[]) => {
             [2, 4, 6],
         ];
         let cells = clickedSquares.sort()
-
+       
 			for (let i = 0; i < winnerLines.length; i++) {
 				let winnerCells= winnerLines[i]
+        let countMatches= 0;
 
-				if (cells[0] === winnerCells[0] && cells[1]===winnerCells[1] && cells[2]===winnerCells[2]) {
-					return true
-				}
-        if (cells[0] === winnerCells[0] && cells[2]===winnerCells[1] && cells[4]===winnerCells[2]) {
-					return true
-				}
-        if (cells[0] === winnerCells[0] && cells[3]===winnerCells[1] && cells[4]===winnerCells[2]) {
-					return true
-				}
-        if (cells[0] === winnerCells[0] && cells[1]===winnerCells[1] && cells[4]===winnerCells[2]) {
-					return true
-				}
-        if (cells[0] === winnerCells[0] && cells[1]===winnerCells[1] && cells[3]===winnerCells[2]) {
-					return true
-				}
-        if (cells[0] === winnerCells[0] && cells[2]===winnerCells[1] && cells[3]===winnerCells[2]) {
-					return true
-				}
-        if (cells[1] === winnerCells[0] && cells[2]===winnerCells[1] && cells[3]===winnerCells[2]) {
-					return true
-				}
-        if (cells[1] === winnerCells[0] && cells[2]===winnerCells[1] && cells[4]===winnerCells[2]) {
-					return true
-				}
-        if (cells[1] === winnerCells[0] && cells[3]===winnerCells[1] && cells[4]===winnerCells[2]) {
-					return true
-				}
-        if (cells[2] === winnerCells[0] && cells[3]===winnerCells[1] && cells[4]===winnerCells[2]) {
-					return true
-				}
-       
-       
-         
-			}
-			return false
-		}
+        for (let y= 0; y < cells.length; y++) {
+          if (winnerCells[0] === cells[y] || winnerCells[1]=== cells[y] || winnerCells[2]=== cells[y]) {
+            countMatches++;
+            console.log(countMatches)
+          }
+          if (countMatches===3){
+            return true
+          }
+        }
+
+        
+      }
+
+    
+      return false};
+
 
 
    
@@ -78,7 +59,7 @@ beforeGame.value= false;
 
 }
 
-function squareClicked(e: MouseEvent, i:number){
+function squareClicked(e:Event, i:number){
     let square= e.target as HTMLDivElement
     players.value.forEach(player => {
         if(player.currentPlayer){
