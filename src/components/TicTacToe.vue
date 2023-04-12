@@ -23,20 +23,44 @@ const calculateWinner = (clickedSquares: number[]) => {
             [0, 4, 8],
             [2, 4, 6],
         ];
+        let cells = clickedSquares.sort()
 
 			for (let i = 0; i < winnerLines.length; i++) {
-				let wc= winnerLines[i]
-				let cells = clickedSquares.sort()
-				console.log(cells[0])
-				if (cells[0] === wc[0] && cells[1]===wc[1] && cells[2]===wc[2]) {
+				let winnerCells= winnerLines[i]
+
+				if (cells[0] === winnerCells[0] && cells[1]===winnerCells[1] && cells[2]===winnerCells[2]) {
 					return true
 				}
-        if (cells[1] === wc[0] && cells[2]===wc[1] && cells[3]===wc[2]) {
+        if (cells[0] === winnerCells[0] && cells[2]===winnerCells[1] && cells[4]===winnerCells[2]) {
 					return true
 				}
-        if (cells[2] === wc[0] && cells[3]===wc[1] && cells[4]===wc[2]) {
+        if (cells[0] === winnerCells[0] && cells[3]===winnerCells[1] && cells[4]===winnerCells[2]) {
 					return true
 				}
+        if (cells[0] === winnerCells[0] && cells[1]===winnerCells[1] && cells[4]===winnerCells[2]) {
+					return true
+				}
+        if (cells[0] === winnerCells[0] && cells[1]===winnerCells[1] && cells[3]===winnerCells[2]) {
+					return true
+				}
+        if (cells[0] === winnerCells[0] && cells[2]===winnerCells[1] && cells[3]===winnerCells[2]) {
+					return true
+				}
+        if (cells[1] === winnerCells[0] && cells[2]===winnerCells[1] && cells[3]===winnerCells[2]) {
+					return true
+				}
+        if (cells[1] === winnerCells[0] && cells[2]===winnerCells[1] && cells[4]===winnerCells[2]) {
+					return true
+				}
+        if (cells[1] === winnerCells[0] && cells[3]===winnerCells[1] && cells[4]===winnerCells[2]) {
+					return true
+				}
+        if (cells[2] === winnerCells[0] && cells[3]===winnerCells[1] && cells[4]===winnerCells[2]) {
+					return true
+				}
+       
+       
+         
 			}
 			return false
 		}
@@ -84,7 +108,7 @@ currentPlayer
   <h1>TIC TAC TOE</h1>
   <StartForm v-if="beforeGame" @addPlayers="handleStart"></StartForm>
   <div  v-else class="board">
-    <SquaresForBoard v-for="n, index in 9" :key="index" @click="squareClicked($event,index)"/>
+    <SquaresForBoard v-for="n, index in 9" :key="index" @click.once="squareClicked($event,index)"/>
   </div>
 <div v-for="player, index in players"  :key="index" ><p v-if="player.currentPlayer">{{player.name}}--{{player.type }}: make your move</p> </div>
   <div v-if="haveWinner">we have a winner!</div>
