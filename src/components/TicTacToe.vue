@@ -88,8 +88,8 @@ currentPlayer
 <template>
   <h1>TIC TAC TOE</h1>
   <StartForm v-if="beforeGame" @addPlayers="handleStart"></StartForm>
-  <div  v-else class="board">
-    <SquaresForBoard v-for="n, index in 9" :key="index" @click.once="squareClicked($event,index)"/>
+  <div  v-else class="board" >
+    <SquaresForBoard v-for="n, index in 9" :key="index" :disabled="!!haveWinner" @click.once="squareClicked($event,index)" />
   </div>
 <div v-for="player, index in players"  :key="index" ><p v-if="player.currentPlayer">{{player.name}}--{{player.type }}: make your move</p> </div>
   <div v-if="haveWinner">we have a winner!</div>
