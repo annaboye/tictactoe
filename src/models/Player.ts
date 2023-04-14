@@ -2,7 +2,7 @@ export class Player {
   constructor(
     public name: string,
     public currentPlayer: boolean,
-    public wins: boolean,
+    public scores: number,
     public type: string,
     public clickedSquares: number[]
   ) {}

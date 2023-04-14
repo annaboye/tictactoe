@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import SquaresForBoard from './SquaresForBoard.vue'
 import StartForm from './StartForm.vue'
-import { ref, computed, onMounted} from 'vue';
+import { ref, onMounted} from 'vue';
 import {Player} from '../models/Player';
-import HighScore from './HighScore.vue';
+import ScoreBoard from './ScoreBoard.vue';
 
 
 let playersFromLs = JSON.parse(localStorage.getItem("currentGamePlayers") || "[]")
@@ -12,17 +12,21 @@ if (playersFromLs.length<1){
   beforeGame.value=true
 }
 else {
-
 beforeGame.value= false;
-
 }
 let players = ref<Player[]>(playersFromLs);
 let haveWinner= ref<boolean>(false)
 let winner = ref<string>("");
+let isTie= ref<boolean>(false);
+
 
 
  
-
+const checkTie =()=>{
+  if(players.value[0].clickedSquares.length + players.value[1].clickedSquares.length===9)
+  isTie.value=true
+  winner.value="It's a tie"
+}
 const calculateWinner = (clickedSquares: number[], player: Player) => {
   
         const winnerLines = [
@@ -47,9 +51,12 @@ const calculateWinner = (clickedSquares: number[], player: Player) => {
             console.log(countMatches)
           }
           if (countMatches===3){
-            localStorage.removeItem("currentGamePlayers")
-            localStorage.setItem("highscore", JSON.stringify(players))
             winner.value = player.name;
+            player.scores++;
+            winner.value = player.name;
+            players.value[0].clickedSquares=[];
+            players.value[1].clickedSquares=[];
+            localStorage.setItem("currentGamePlayers", JSON.stringify(players.value))
             return true
           }
         }
@@ -57,15 +64,17 @@ const calculateWinner = (clickedSquares: number[], player: Player) => {
         
       }
 
+    checkTie();
+
       return false};
 
 
 onMounted(()=>{
     if (beforeGame.value=== false){
-      clickedSquares()
+      clickedSquaresInLs()
     }} )
     
-function clickedSquares(){
+function clickedSquaresInLs(){
   players.value[0].clickedSquares.forEach(clickedSquare => {
     if(clickedSquare<=9){
      
@@ -89,7 +98,7 @@ function clickedSquares(){
 
 function handleStart(xName: string, oName: string){
   
-players.value.push(new Player(xName, false, false, "X", []), new Player(oName, true, false, "O",[]) )
+players.value.push(new Player(xName, false, 0, "X", []), new Player(oName, true, 0, "O",[]) )
 beforeGame.value= false;
 
 }
@@ -99,6 +108,7 @@ players.value[1].currentPlayer = !players.value[1].currentPlayer
 }
 function squareClicked(e:Event, i:number){
   let square = e.target as HTMLButtonElement;
+
     players.value.forEach(player => {
         if(player.currentPlayer){
          
@@ -110,16 +120,12 @@ function squareClicked(e:Event, i:number){
          haveWinner.value=calculateWinner(player.clickedSquares, player)
    
         }
-        // player.currentPlayer = !player.currentPlayer
-
-      
         
     });
     togglePlayer()
     if(!haveWinner.value){
       localStorage.setItem("currentGamePlayers", JSON.stringify(players.value))
     }
-    console.log(i)
 }
 
 
@@ -128,7 +134,7 @@ function squareClicked(e:Event, i:number){
 
 <template>
   <h1>TIC TAC TOE</h1>
-  <HighScore :winner="winner" v-if="haveWinner"></HighScore>
+  <ScoreBoard :is-tie="isTie" :players="players" :winner="winner" v-if="haveWinner||isTie"></ScoreBoard>
   <div v-else>
    <div v-for="player, index in players" :key="index" ><p v-if="player.currentPlayer">{{player.name}}--{{player.type }}: make your move</p>
    </div>
