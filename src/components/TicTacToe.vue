@@ -6,29 +6,50 @@ import {Player} from '../models/Player';
 import ScoreBoard from './ScoreBoard.vue';
 
 
-let playersFromLs = JSON.parse(localStorage.getItem("currentGamePlayers") || "[]")
+let playerList = JSON.parse(localStorage.getItem("currentGamePlayers") || "[]")
 let beforeGame = ref<boolean>();
-if (playersFromLs.length<1){
+let players = ref<Player[]>(playerList);
+let haveWinner= ref<boolean>(false)
+let winner = ref<string>("");
+let isTie= ref<boolean>(false);
+
+if (playerList.length<1){
   beforeGame.value=true
 }
 else {
 beforeGame.value= false;
 }
-let players = ref<Player[]>(playersFromLs);
-let haveWinner= ref<boolean>(false)
-let winner = ref<string>("");
-let isTie= ref<boolean>(false);
+function clickedSquaresInLs(){
+  players.value.forEach(player => {
+    player.clickedSquares.forEach(clickedSquare => {
+     if(clickedSquare<=9){
+      let btn= document.getElementById((clickedSquare.toString())) as HTMLButtonElement
+      btn.innerHTML= player.type
+      btn.disabled= true;
+     }
+    });  
+  });
+};
+onMounted(()=>{
+    if (beforeGame.value=== false){
+      clickedSquaresInLs()
+    }} )
 
-
-
+function handleStart(xName: string, oName: string){
+players.value.push(new Player(xName, false, 0, "X", []), new Player(oName, true, 0, "O",[]) )
+beforeGame.value= false;
+}
  
 const checkTie =()=>{
-  if(players.value[0].clickedSquares.length + players.value[1].clickedSquares.length===9)
+  if(players.value[0].clickedSquares.length + players.value[1].clickedSquares.length===9){
   isTie.value=true
-  winner.value="It's a tie"
+  winner.value="It's a tie"}
+  if(isTie.value){
+    players.value[0].clickedSquares=[];
+    players.value[1].clickedSquares=[];
+  }
 }
 const calculateWinner = (clickedSquares: number[], player: Player) => {
-  
         const winnerLines = [
             [0, 1, 2],
             [3, 4, 5],
@@ -39,16 +60,15 @@ const calculateWinner = (clickedSquares: number[], player: Player) => {
             [0, 4, 8],
             [2, 4, 6],
         ];
-        let cells = clickedSquares.sort()
        
 			for (let i = 0; i < winnerLines.length; i++) {
 				let winnerCells= winnerLines[i]
         let countMatches= 0;
 
-        for (let y= 0; y < cells.length; y++) {
-          if (winnerCells[0] === cells[y] || winnerCells[1]=== cells[y] || winnerCells[2]=== cells[y]) {
-            countMatches++;
-            console.log(countMatches)
+        for (let y= 0; y < clickedSquares.length; y++) {
+          if (winnerCells[0] === clickedSquares[y] || winnerCells[1]=== clickedSquares[y] || winnerCells[2]=== clickedSquares[y])
+           {
+            countMatches++; 
           }
           if (countMatches===3){
             winner.value = player.name;
@@ -56,80 +76,32 @@ const calculateWinner = (clickedSquares: number[], player: Player) => {
             winner.value = player.name;
             players.value[0].clickedSquares=[];
             players.value[1].clickedSquares=[];
-            localStorage.setItem("currentGamePlayers", JSON.stringify(players.value))
             return true
           }
         }
-
-        
       }
 
     checkTie();
-
-      return false};
-
-
-onMounted(()=>{
-    if (beforeGame.value=== false){
-      clickedSquaresInLs()
-    }} )
-    
-function clickedSquaresInLs(){
-  players.value[0].clickedSquares.forEach(clickedSquare => {
-    if(clickedSquare<=9){
-     
-      let btn= document.getElementById((clickedSquare.toString())) as HTMLButtonElement
-      btn.innerHTML= players.value[0].type
-      btn.disabled= true;
-    
-    }
-  });
-  players.value[1].clickedSquares.forEach(clickedSquare => {
-    if(clickedSquare<=9){
-     
-      let btn= document.getElementById((clickedSquare.toString())) as HTMLButtonElement
-      btn.innerHTML= players.value[1].type
-      btn.disabled= true;
-    }
-  });
-  
+    return false
 };
 
-
-function handleStart(xName: string, oName: string){
-  
-players.value.push(new Player(xName, false, 0, "X", []), new Player(oName, true, 0, "O",[]) )
-beforeGame.value= false;
-
-}
 function togglePlayer(){
 players.value[0].currentPlayer = !players.value[0].currentPlayer
 players.value[1].currentPlayer = !players.value[1].currentPlayer
 }
+
 function squareClicked(e:Event, i:number){
   let square = e.target as HTMLButtonElement;
-
     players.value.forEach(player => {
         if(player.currentPlayer){
-         
          player.clickedSquares.push(i)
          square.innerHTML= player.type
-         console.log(player.type)
-         console.log(player)
-         
          haveWinner.value=calculateWinner(player.clickedSquares, player)
-   
         }
-        
     });
     togglePlayer()
-    if(!haveWinner.value){
-      localStorage.setItem("currentGamePlayers", JSON.stringify(players.value))
-    }
+    localStorage.setItem("currentGamePlayers", JSON.stringify(players.value))
 }
-
-
-
 </script>
 
 <template>

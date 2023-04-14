@@ -9,10 +9,8 @@ defineProps<{
     isTie: boolean
 }>()
 function reMatch(players:Player[]){
-players[0].clickedSquares=[];
-  players[1].clickedSquares=[];
-  localStorage.setItem("currentGamePlayers", JSON.stringify(players))
-    window.location.reload()
+localStorage.setItem("currentGamePlayers", JSON.stringify(players))
+window.location.reload()
 }
 function newGame (){
 localStorage.clear()
