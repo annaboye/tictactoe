@@ -47,4 +47,7 @@ window.location.reload()
 .winner{
     font-size: 2em;
 }
+button{
+    margin: 10px;
+}
 </style>

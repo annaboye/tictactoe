@@ -14,7 +14,7 @@ let winner = ref<string>("");
 let isTie= ref<boolean>(false);
 
 if (playerList.length<1){
-  beforeGame.value=true
+beforeGame.value=true
 }
 else {
 beforeGame.value= false;
@@ -102,12 +102,18 @@ function squareClicked(e:Event, i:number){
     togglePlayer()
     localStorage.setItem("currentGamePlayers", JSON.stringify(players.value))
 }
+
+function startOver(){
+  localStorage.clear()
+  window.location.reload()
+}
 </script>
 
 <template>
   <h1>TIC TAC TOE</h1>
   <ScoreBoard :is-tie="isTie" :players="players" :winner="winner" v-if="haveWinner||isTie"></ScoreBoard>
-  <div v-else>
+  <div v-if="!beforeGame&&!haveWinner">
+   <div>{{ players[0].name }} VS {{ players[0].name }} </div>
    <div v-for="player, index in players" :key="index" ><p v-if="player.currentPlayer">{{player.name}}--{{player.type }}: make your move</p>
    </div>
   </div>
@@ -115,7 +121,7 @@ function squareClicked(e:Event, i:number){
   <div  v-else class="board" >
     <SquaresForBoard v-for="n, index in 9" :id="index" :key="index"  :disabled="haveWinner" @click.once="squareClicked($event,index)" :buttonKey="index" />
   </div>
-
+  <button class="restart" v-if="!beforeGame&&!haveWinner" @click="startOver">Start Over</button>
 
  
 
@@ -132,6 +138,9 @@ function squareClicked(e:Event, i:number){
     height:350px;
     width: 350px;
     margin: 0 auto;
+}
+.restart{
+  margin: 10px;
 }
 
 </style>
