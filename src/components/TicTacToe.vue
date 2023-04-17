@@ -5,10 +5,8 @@ import { ref, onMounted} from 'vue';
 import {Player} from '../models/Player';
 import ScoreBoard from './ScoreBoard.vue';
 
-
-let playerList = JSON.parse(localStorage.getItem("currentGamePlayers") || "[]")
 let beforeGame = ref<boolean>();
-let players = ref<Player[]>(playerList);
+let players = ref<Player[]>(JSON.parse(localStorage.getItem("currentGamePlayers") || "[]"));
 let haveWinner= ref<boolean>(false)
 let winner = ref<string>("");
 let isTie= ref<boolean>(false);
@@ -18,7 +16,7 @@ let board =  ref([
           '', '', ''
         ]);
 
-if (playerList.length<1){
+if (players.value.length<1){
 beforeGame.value=true
 }
 else {
@@ -27,7 +25,7 @@ beforeGame.value= false;
 function clickedSquaresInLs(){
   players.value.forEach(player => {
     player.clickedSquares.forEach(clickedSquare => {
-     if(clickedSquare<=9){
+     if(clickedSquare<9){
       board.value[clickedSquare]= player.type
      }
     });  
@@ -84,7 +82,7 @@ const calculateWinner = (clickedSquares: number[], player: Player) => {
         }
       }
 
-    checkTie();
+    
     return false
 };
 
@@ -93,16 +91,19 @@ players.value[0].currentPlayer = !players.value[0].currentPlayer
 players.value[1].currentPlayer = !players.value[1].currentPlayer
 }
 
-function squareClicked(i:number){
+function eachMove(i:number){
   players.value.forEach(player => {
         if(player.currentPlayer){
          player.clickedSquares.push(i)
          board.value[i]= player.type
          haveWinner.value=calculateWinner(player.clickedSquares, player)
+         
         }
     });
+    checkTie();
     togglePlayer()
     localStorage.setItem("currentGamePlayers", JSON.stringify(players.value))
+   
 }
 
 function startOver(){
@@ -121,7 +122,7 @@ function startOver(){
   </div>
   <StartForm v-if="beforeGame" @addPlayers="handleStart"></StartForm>
   <div  v-else class="board" >
-    <SquaresForBoard v-for="square, index in board" :key="index" :disabled="square.length>0 || haveWinner"  @click.once="squareClicked(index)" :text="square" />
+    <SquaresForBoard v-for="square, index in board" :key="index" :disabled="square.length>0 || haveWinner"  @click.once="eachMove(index)" :squareText="square" />
   </div>
   <button class="restart" v-if="!beforeGame&&!haveWinner" @click="startOver">Start Over</button>
 

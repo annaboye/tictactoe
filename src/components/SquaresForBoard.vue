@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
 defineProps<{ 
-    text: string
+    squareText: string
 }>()
 
 
 </script>
 
 <template>
-    <button class ="square" >{{ text }}</button>
+    <button class ="square" >{{ squareText }}</button>
 </template>
 
 <style scoped>
@@ -17,7 +17,7 @@ defineProps<{
 .square {
     width: 30%;
     height: 30%;
-    
+    font-size: xx-large;
     border: 1px solid rgb(64, 60, 60);;
 }
 .square:disabled{
