@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref } from '@vue/runtime-dom';
 import { Player } from '../models/Player';
-
 
 defineProps<{ 
     winner: string
     players: Player[]
     isTie: boolean
 }>()
+
 function reMatch(players:Player[]){
 localStorage.setItem("currentGamePlayers", JSON.stringify(players))
 window.location.reload()
@@ -16,10 +15,6 @@ function newGame (){
 localStorage.clear()
 window.location.reload()
 }
-
-
-
-
 </script>
 
 <template>
@@ -31,7 +26,6 @@ window.location.reload()
       <article>{{ players[0].scores}} - {{ players[1].scores }}</article>
       <button @click="reMatch(players)">REMATCH</button>
       <button @click="newGame">START OVER</button>
-
     </section>
 
 </template>

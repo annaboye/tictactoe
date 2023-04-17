@@ -1,18 +1,18 @@
 <script setup lang="ts">
 
-
+defineProps<{ 
+    text: string
+}>()
 
 
 </script>
 
 <template>
- 
-    <button class ="square">
-    </button>
-
+    <button class ="square" >{{ text }}</button>
 </template>
 
 <style scoped>
+
 
 .square {
     width: 30%;

@@ -12,6 +12,11 @@ let players = ref<Player[]>(playerList);
 let haveWinner= ref<boolean>(false)
 let winner = ref<string>("");
 let isTie= ref<boolean>(false);
+let board =  ref([
+          '', '', '',
+          '', '', '',
+          '', '', ''
+        ]);
 
 if (playerList.length<1){
 beforeGame.value=true
@@ -23,9 +28,7 @@ function clickedSquaresInLs(){
   players.value.forEach(player => {
     player.clickedSquares.forEach(clickedSquare => {
      if(clickedSquare<=9){
-      let btn= document.getElementById((clickedSquare.toString())) as HTMLButtonElement
-      btn.innerHTML= player.type
-      btn.disabled= true;
+      board.value[clickedSquare]= player.type
      }
     });  
   });
@@ -90,12 +93,11 @@ players.value[0].currentPlayer = !players.value[0].currentPlayer
 players.value[1].currentPlayer = !players.value[1].currentPlayer
 }
 
-function squareClicked(e:Event, i:number){
-  let square = e.target as HTMLButtonElement;
-    players.value.forEach(player => {
+function squareClicked(i:number){
+  players.value.forEach(player => {
         if(player.currentPlayer){
          player.clickedSquares.push(i)
-         square.innerHTML= player.type
+         board.value[i]= player.type
          haveWinner.value=calculateWinner(player.clickedSquares, player)
         }
     });
@@ -119,7 +121,7 @@ function startOver(){
   </div>
   <StartForm v-if="beforeGame" @addPlayers="handleStart"></StartForm>
   <div  v-else class="board" >
-    <SquaresForBoard v-for="n, index in 9" :id="index" :key="index"  :disabled="haveWinner" @click.once="squareClicked($event,index)" :buttonKey="index" />
+    <SquaresForBoard v-for="square, index in board" :key="index" :disabled="square.length>0 || haveWinner"  @click.once="squareClicked(index)" :text="square" />
   </div>
   <button class="restart" v-if="!beforeGame&&!haveWinner" @click="startOver">Start Over</button>
 
