@@ -7,7 +7,7 @@ import ScoreBoard from './ScoreBoard.vue';
 
 let beforeGame = ref<boolean>();
 let players = ref<Player[]>(JSON.parse(localStorage.getItem("currentGamePlayers") || "[]"));
-let haveWinner= ref<boolean>(false)
+let endGame= ref<boolean>(false)
 let winner = ref<string>("");
 let isTie= ref<boolean>(false);
 let board =  ref([
@@ -44,6 +44,7 @@ beforeGame.value= false;
 const checkTie =()=>{
   if(players.value[0].clickedSquares.length + players.value[1].clickedSquares.length===9){
   isTie.value=true
+  endGame.value=true
   winner.value="It's a tie"}
   if(isTie.value){
     players.value[0].clickedSquares=[];
@@ -96,7 +97,7 @@ function eachMove(i:number){
         if(player.currentPlayer){
          player.clickedSquares.push(i)
          board.value[i]= player.type
-         haveWinner.value=calculateWinner(player.clickedSquares, player)
+         endGame.value=calculateWinner(player.clickedSquares, player)
          
         }
     });
@@ -114,17 +115,17 @@ function startOver(){
 
 <template>
   <h1>TIC TAC TOE</h1>
-  <ScoreBoard :is-tie="isTie" :players="players" :winner="winner" v-if="haveWinner||isTie"></ScoreBoard>
-  <div v-if="!beforeGame&&!haveWinner">
+  <ScoreBoard :is-tie="isTie" :players="players" :winner="winner" v-if="endGame"></ScoreBoard>
+  <div v-if="!beforeGame&&!endGame">
    <div>{{ players[0].name }} VS {{ players[0].name }} </div>
    <div v-for="player, index in players" :key="index" ><p v-if="player.currentPlayer">{{player.name}}--{{player.type }}: make your move</p>
    </div>
   </div>
   <StartForm v-if="beforeGame" @addPlayers="handleStart"></StartForm>
   <div  v-else class="board" >
-    <SquaresForBoard v-for="square, index in board" :key="index" :disabled="square.length>0 || haveWinner"  @click.once="eachMove(index)" :squareText="square" />
+    <SquaresForBoard v-for="square, index in board" :key="index" :disabled="square.length>0 || endGame"  @click.once="eachMove(index)" :squareText="square" />
   </div>
-  <button class="restart" v-if="!beforeGame&&!haveWinner" @click="startOver">Start Over</button>
+  <button class="restart" v-if="!beforeGame&&!endGame" @click="startOver">Start Over</button>
 
  
 
