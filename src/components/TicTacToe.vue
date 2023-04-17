@@ -21,6 +21,7 @@ beforeGame.value=true
 }
 else {
 beforeGame.value= false;
+clickedSquaresInLs()
 }
 function clickedSquaresInLs(){
   players.value.forEach(player => {
@@ -31,10 +32,6 @@ function clickedSquaresInLs(){
     });  
   });
 };
-onMounted(()=>{
-    if (beforeGame.value=== false){
-      clickedSquaresInLs()
-    }} )
 
 function handleStart(xName: string, oName: string){
 players.value.push(new Player(xName, false, 0, "X", []), new Player(oName, true, 0, "O",[]) )
