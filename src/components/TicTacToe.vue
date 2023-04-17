@@ -36,6 +36,8 @@ function clickedSquaresInLs(){
 function handleStart(xName: string, oName: string){
 players.value.push(new Player(xName, false, 0, "X", []), new Player(oName, true, 0, "O",[]) )
 beforeGame.value= false;
+localStorage.setItem("currentGamePlayers", JSON.stringify(players.value))
+
 }
  
 const checkTie =()=>{
