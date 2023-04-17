@@ -114,7 +114,7 @@ function startOver(){
   <h1>TIC TAC TOE</h1>
   <ScoreBoard :is-tie="isTie" :players="players" :winner="winner" v-if="endGame"></ScoreBoard>
   <div v-if="!beforeGame&&!endGame">
-   <div>{{ players[0].name }} VS {{ players[0].name }} </div>
+   <div>{{ players[0].name }} VS {{ players[1].name }} </div>
    <div v-for="player, index in players" :key="index" ><p v-if="player.currentPlayer">{{player.name}}--{{player.type }}: make your move</p>
    </div>
   </div>
